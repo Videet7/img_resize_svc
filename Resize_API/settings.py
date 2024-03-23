@@ -123,5 +123,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Whatsapp config
-TOKEN = "EAAEStByQPUwBO7gKwcMw4e5jSVaO2F34JFESctVOMOz53ESCoaUib6bP73OHCrs4nH5nevlVGm7TfLWnYgbe9UZAphhfbqhwhHYpIQqiGdVZAE69vjPhropQQuP3FHbYFRZAYp7E7JvErXsiProPgyZBcZCYbr0X18BuMGtLAXUu1FFabd2dyUaRbPSOUZCbodZCSzL9iZCbvaREmRdQkPgZD"
-WA_URL = "https://graph.facebook.com/v18.0/272698412591305/messages" 
+TOKEN = "Bearer EAAEStByQPUwBO7gKwcMw4e5jSVaO2F34JFESctVOMOz53ESCoaUib6bP73OHCrs4nH5nevlVGm7TfLWnYgbe9UZAphhfbqhwhHYpIQqiGdVZAE69vjPhropQQuP3FHbYFRZAYp7E7JvErXsiProPgyZBcZCYbr0X18BuMGtLAXUu1FFabd2dyUaRbPSOUZCbodZCSzL9iZCbvaREmRdQkPgZD"
+WA_URL = "https://graph.facebook.com/v18.0/272698412591305/messages"
+
+BASE_TOKEN = 'a735053f-c5cd-4404-924f-e368e130ec96'

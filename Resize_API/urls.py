@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Resize_API.views import ready_home
+from Resize_API.views import ready_home, send_msg, whatsAppWebhook
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', ready_home)
+    path('home/', ready_home),
+    path('sendmsg/', send_msg),
+    path('resize/image/', whatsAppWebhook, name='WhatsApp'),
 ]
