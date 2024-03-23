@@ -21,6 +21,6 @@ from Resize_API.views import ready_home, send_msg, whatsAppWebhook
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', ready_home),
-    path('sendmsg/', send_msg),
+    path('sendmsg/<int:sendNumber>/<str:message>', send_msg),
     path('resize/image/', whatsAppWebhook, name='WhatsApp'),
 ]

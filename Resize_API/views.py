@@ -6,7 +6,7 @@ import json
 def ready_home(request):
     return HttpResponse("This is Home Page")
 
-def send_msg(sendNumber, message):
+def send_msg(request, sendNumber, message):
     try:
         auth = {
             "Authorization" : settings.TOKEN
