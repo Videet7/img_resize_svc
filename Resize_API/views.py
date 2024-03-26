@@ -12,7 +12,8 @@ def send_msg(request, nation=None, sendNumber=None, message=None):
         auth = {
             "Authorization" : settings.TOKEN
         }
-        if nation:
+        number = None
+        if nation and len(sendNumber) == 10:
             number = const.NATION[nation] + str(sendNumber)
         payload = {
             "messaging_product" : "whatsapp",
@@ -48,11 +49,12 @@ def whatsAppWebhook(request):
             if 'object' in data and 'entry' in data and  data['object'] == 'whatsapp_business_account':
                 try:
                     for entry in data['entry']:
-                        ph_no = entry['changes'][0]['value']['metadata']['display_phone_number']
-                        text = entry['changes'][0]['value']['messages'][0]['text']['body']
-
-                        revert = f"Thank You for you message -- {text}"
-                        send_msg(request,'ind', ph_no, revert)
+                        if 'messages' in entry['changes'][0]['value']:
+                            ph_no = entry['changes'][0]['value']['messages'][0]['from']
+                            text = entry['changes'][0]['value']['messages'][0]['text']['body']
+                            revert = f"Thank You for your message -- {text}"
+                            send_msg(request,'ind', ph_no, revert)
+                            return HttpResponse("Success", status=200)
                 except Exception as e:
                     send_msg(request,'ind','9307103565', f'Error occurred due to {str(e)}')
                     return HttpResponse("Falied", status=403)
