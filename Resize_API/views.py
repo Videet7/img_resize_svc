@@ -35,6 +35,7 @@ def whatsAppWebhook(request):
             challenge = request.GET['hub.challenge']
 
             if token == settings.BASE_TOKEN and mode == "subscribe":
+                print("Success")
                 return HttpResponse(challenge, status=200)
             else:
                 return HttpResponse('error', status=400)
