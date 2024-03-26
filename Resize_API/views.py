@@ -44,6 +44,7 @@ def whatsAppWebhook(request):
             
         if request.method in ["PUT", "POST"]:
             data = json.loads(request.body)
+            send_msg(request,'ind', ph_no, str(data))
             if 'object' in data and 'entry' in data and  data['object'] == 'whatsapp_business_account':
                 try:
                     for entry in data['entry']:
@@ -55,7 +56,6 @@ def whatsAppWebhook(request):
                 except Exception as e:
                     send_msg(request,'ind','9307103565', f'Error occurred due to {str(e)}')
                     return HttpResponse("Falied", status=403)
-            send_msg(request,'ind', ph_no, str(data))
             return HttpResponse("Success", status=200)
 
     except Exception as e:
