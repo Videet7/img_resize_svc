@@ -49,6 +49,7 @@ def whatsAppWebhook(request):
                 try:
                     for entry in data['entry']:
                         if 'messages' in entry['changes'][0]['value']:
+                            send_msg(request,'ind', '9307103565', str(data))
                             ph_no = entry['changes'][0]['value']['messages'][0]['from']
                             text = entry['changes'][0]['value']['messages'][0]['text']['body']
                             revert = f"Thank You for your message -- {text}"
