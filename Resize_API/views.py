@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 from Resize_API import settings, const
 import json
+import os
 
 def ready_home(request):
     return HttpResponse("This is Home Page")
@@ -10,7 +11,7 @@ def ready_home(request):
 def send_msg(request, nation=None, sendNumber=None, message=None):
     try:
         auth = {
-            "Authorization" : settings.TOKEN
+            "Authorization" : os.environ('TOKEN') #settings.TOKEN
         }
         number = None
         if nation and len(sendNumber) == 10:
@@ -21,7 +22,7 @@ def send_msg(request, nation=None, sendNumber=None, message=None):
             "type" : "text",
             "text" : {"body" : message}
         }
-        response = requests.post(settings.WA_URL, headers=auth, json=payload)
+        response = requests.post(os.environ('WA_URL'), headers=auth, json=payload)
         ans = response.json()
         return HttpResponse(f"Response {ans}")
     except Exception as e:
