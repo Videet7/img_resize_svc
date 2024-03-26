@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import requests
 from Resize_API import settings, const
 import json
@@ -27,6 +28,7 @@ def send_msg(request, nation=None, sendNumber=None, message=None):
             send_msg(request=None,nation='ind',sendNumber='9307103565', message=f'Error occurred due to {str(e)}')
         HttpResponse(f"Failed due to {e}")
 
+@csrf_exempt
 def whatsAppWebhook(request):
     try:
         if request.method == "GET":
