@@ -11,7 +11,7 @@ def ready_home(request):
 def send_msg(request, nation=None, sendNumber=None, message=None):
     try:
         auth = {
-            "Authorization" : os.environ('TOKEN') #settings.TOKEN
+            "Authorization" : os.getenv('TOKEN') #settings.TOKEN
         }
         number = None
         if nation and len(sendNumber) == 10:
@@ -22,7 +22,7 @@ def send_msg(request, nation=None, sendNumber=None, message=None):
             "type" : "text",
             "text" : {"body" : message}
         }
-        response = requests.post(os.environ('WA_URL'), headers=auth, json=payload)
+        response = requests.post(os.getenv('WA_URL'), headers=auth, json=payload)
         ans = response.json()
         return HttpResponse(f"Response {ans}")
     except Exception as e:
