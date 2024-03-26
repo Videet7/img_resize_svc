@@ -51,6 +51,8 @@ def whatsAppWebhook(request):
                         send_msg(request,'ind', ph_no, revert)
                 except Exception as e:
                     send_msg(request,'ind','9307103565', f'Error occurred due to {str(e)}')
+                    return HttpResponse("Falied", status=403)
+            return HttpResponse("Success", status=200)
 
     except Exception as e:
         HttpResponse(f"Failed due to {e}")   
