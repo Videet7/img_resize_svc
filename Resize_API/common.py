@@ -87,7 +87,8 @@ def if_type_image(request, entry, data):
                 auth = {
                     "Authorization" : os.getenv('TOKEN')
                     }
-                response = requests.get(os.getenv('IMG_URL'),headers=auth)
+                img_url = f'https://graph.facebook.com/v19.0/{image_id}'
+                response = requests.get(img_url,headers=auth)
                 res_json = response.json()
                 img_url = res_json.get("url",None)
                 revert(request,'ind', ph_no, img_url, 'image')
