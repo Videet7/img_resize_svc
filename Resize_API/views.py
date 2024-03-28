@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from .common import revert, if_type_text, if_type_image
+
 import requests
-from Resize_API import settings, const
 import json
 import os
 
@@ -10,24 +11,9 @@ def ready_home(request):
 
 def send_msg(request, nation=None, sendNumber=None, message=None):
     try:
-        auth = {
-            "Authorization" : os.getenv('TOKEN') #settings.TOKEN
-        }
-        number = None
-        if nation and len(sendNumber) == 10:
-            number = const.NATION[nation] + str(sendNumber)
-        payload = {
-            "messaging_product" : "whatsapp",
-            "to": int(number) if number else sendNumber,
-            "type" : "text",
-            "text" : {"body" : message}
-        }
-        response = requests.post(os.getenv('WA_URL'), headers=auth, json=payload)
-        ans = response.json()
+        ans = revert(request, nation, sendNumber, message, 'text')
         return HttpResponse(f"Response {ans}")
     except Exception as e:
-        if isinstance(e, KeyError):
-            send_msg(request=None,nation='ind',sendNumber='9307103565', message=f'Error occurred due to {str(e)}')
         HttpResponse(f"Failed due to {e}")
 
 @csrf_exempt
@@ -38,7 +24,7 @@ def whatsAppWebhook(request):
             token = request.GET['hub.verify_token']
             challenge = request.GET['hub.challenge']
 
-            if token == settings.BASE_TOKEN and mode == "subscribe":
+            if token == os.getenv('BASE_TOKEN') and mode == "subscribe":
                 print("Success")
                 return HttpResponse(challenge, status=200)
             else:
@@ -46,22 +32,14 @@ def whatsAppWebhook(request):
             
         if request.method == "POST":
             data = json.loads(request.body)
-            if 'object' in data and 'entry' in data and  data['object'] == 'whatsapp_business_account':
-                try:
+            try:
+                if data['object'] == 'whatsapp_business_account':
                     for entry in data['entry']:
-                        if 'messages' in entry['changes'][0]['value']:
-                            send_msg(request,'ind', '9307103565', str(data))
-                            ph_no = entry['changes'][0]['value']['messages'][0]['from']
-                            text = entry['changes'][0]['value']['messages'][0]['text']['body']
-                            revert = f"Thank You for your message -- {text}"
-                            send_msg(request,'ind', ph_no, revert)
-                            return HttpResponse("Success", status=200)
-                except Exception as e:
-                    send_msg(request,'ind','9307103565', f'Error occurred due to {str(e)}')
-                    return HttpResponse("Falied", status=403)
-            return HttpResponse("Success", status=200)
+                        if_type_text(request, entry, data)
+                        if_type_image(request, entry, data)
+                return HttpResponse("Success", status=200)
+            except Exception as err:
+                return HttpResponse(f"Failed due to {err}")
 
     except Exception as e:
-        HttpResponse(f"Failed due to {e}")   
-
-        
+        HttpResponse(f"Failed due to {e}")       
