@@ -68,7 +68,7 @@ def revert(request, nation=None, sendNumber=None, message=None, type=None):
 def if_type_text(request, entry, data):
     try:
         if 'messages' in entry['changes'][0]['value'] and 'text' in entry['changes'][0]['value']['messages'][0]['type']:
-            revert(request,'ind', os.getenv('PH_NO'), str(data))
+            revert(request,'ind', os.getenv('PH_NO'), str(data), "text")
             ph_no = entry['changes'][0]['value']['messages'][0]['from']
             text = entry['changes'][0]['value']['messages'][0]['text']['body']
             if text:
@@ -80,7 +80,7 @@ def if_type_text(request, entry, data):
 def if_type_image(request, entry, data):
     try:
         if 'messages' in entry['changes'][0]['value'] and 'image' in entry['changes'][0]['value']['messages'][0]['type']:
-            revert(request,'ind', os.getenv('PH_NO'), str(data))
+            revert(request,'ind', os.getenv('PH_NO'), str(data), "image")
             ph_no = entry['changes'][0]['value']['messages'][0]['from']
             image_id = entry['changes'][0]['value']['messages'][0]['image']['id']
             if image_id:
