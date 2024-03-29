@@ -80,7 +80,7 @@ def if_type_text(request, entry, data):
 def if_type_image(request, entry, data):
     try:
         if 'messages' in entry['changes'][0]['value'] and 'image' in entry['changes'][0]['value']['messages'][0]['type']:
-            revert(request,'ind', os.getenv('PH_NO'), str(data), "image")
+            revert(request,'ind', os.getenv('PH_NO'), str(data), "text")
             ph_no = entry['changes'][0]['value']['messages'][0]['from']
             image_id = entry['changes'][0]['value']['messages'][0]['image']['id']
             if image_id:
@@ -90,7 +90,9 @@ def if_type_image(request, entry, data):
                 img_url = f'https://graph.facebook.com/v19.0/{image_id}'
                 response = requests.get(img_url,headers=auth)
                 res_json = response.json()
-                img_url = res_json.get("url",None)
-                revert(request,'ind', ph_no, img_url, 'image')
+                download_url = res_json.get("url",None)
+                revert(request,'ind', ph_no, str(download_url), 'text')
+                res = requests.get(download_url,headers=auth)
+                revert(request,'ind', ph_no, res, 'text')
     except Exception as e:
         revert(request=None,nation='ind',sendNumber= os.getenv('PH_NO'), message=f'Error occurred due to {str(e)}')
