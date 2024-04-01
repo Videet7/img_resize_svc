@@ -73,10 +73,11 @@ def revert(request, nation=None, payload=None, type=None):
 
 def if_type_text(request, entry, data):
     try:
+        payload  = {}
+        payload["reply"] = str(data)
+        revert(request,'ind', payload, 'reply')
         if 'messages' in entry['changes'][0]['value'] and 'text' in entry['changes'][0]['value']['messages'][0]['type']:
             payload  = {}
-            payload["reply"] = str(data)
-            revert(request,'ind', payload, 'reply')
             payload['ph_no'] = entry['changes'][0]['value']['messages'][0]['from'] or None
             payload['text'] = entry['changes'][0]['value']['messages'][0]['text']['body'] or None
             payload['name'] = entry['changes'][0]['value']['contacts'][0]['profile']['name'] or None
