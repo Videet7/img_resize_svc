@@ -93,7 +93,7 @@ def image_resize(request, payload):
     if "*" in payload['text']:
         payload["reply"] = "Please upload the image to be resized"
         return revert(request,'ind', payload, 'reply')
-    if "exit" in str(payload['text']).lower:
+    if "exit" in str(payload['text']).lower():
         payload["reply"] = "Thank You and Good Bye"
         return revert(request,'ind', payload, 'reply')
     payload["reply"] = "Please entry the new dimensions in following format \nLenght * Width"
