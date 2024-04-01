@@ -73,23 +73,28 @@ def revert(request, nation=None, payload=None, type=None):
 
 def if_type_text(request, entry, data):
     try:
-        payload  = {}
-        payload["reply"] = str(data)
-        revert(request,'ind', payload, 'reply')
         if 'messages' in entry['changes'][0]['value'] and 'text' in entry['changes'][0]['value']['messages'][0]['type']:
             payload  = {}
             payload['ph_no'] = entry['changes'][0]['value']['messages'][0]['from'] or None
             payload['text'] = entry['changes'][0]['value']['messages'][0]['text']['body'] or None
             payload['name'] = entry['changes'][0]['value']['contacts'][0]['profile']['name'] or None
-            if payload['text'] == 'Image Resize' or "*" in payload['text']:
-                return image_resize(request, payload)
             revert(request,'ind', payload, 'text')
     except Exception as e:
         revert(request=None,nation='ind',payload={'ph_no': os.getenv('PH_NO'), 'text':f'Error occurred due to {str(e)}'})
 
+def if_type_reply(request, entry, data):
+    if 'messages' in entry['changes'][0]['value'] and 'button' in entry['changes'][0]['value']['messages'][0]['type']:
+        payload = {}
+        payload['ph_no'] = entry['changes'][0]['value']['messages'][0]['from'] or None
+        payload['text'] = entry['changes'][0]['value']['messages'][0]['button']['text'] or None
+        image_resize(request, payload)
+
 def image_resize(request, payload):
     if "*" in payload['text']:
         payload["reply"] = "Please upload the image to be resized"
+        return revert(request,'ind', payload, 'reply')
+    if "exit" in str(payload['text']).lower:
+        payload["reply"] = "Thank You and Good Bye"
         return revert(request,'ind', payload, 'reply')
     payload["reply"] = "Please entry the new dimensions in following format \nLenght * Width"
     return revert(request,'ind', payload, 'reply')

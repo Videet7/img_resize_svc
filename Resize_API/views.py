@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .common import revert, if_type_text, if_type_image
+from .common import revert, if_type_text, if_type_reply, if_type_image
 
 import requests
 import json
@@ -36,6 +36,7 @@ def whatsAppWebhook(request):
                 if data['object'] == 'whatsapp_business_account':
                     for entry in data['entry']:
                         if_type_text(request, entry, data)
+                        if_type_reply(request, entry , data)
                         if_type_image(request, entry, data)
                 return HttpResponse("Success", status=200)
             except Exception as err:
