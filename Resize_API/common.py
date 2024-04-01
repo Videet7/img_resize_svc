@@ -24,7 +24,7 @@ def revert(request, nation=None, payload=None, type=None):
                         "parameters": [
                             {
                                 "type": "text",
-                                "text": payload['name'] if payload['name'] else str(payload)
+                                "text": payload['name'] if payload['name'] else payload['text']
                             }
                         ]
                     }
@@ -75,7 +75,8 @@ def if_type_text(request, entry, data):
     try:
         if 'messages' in entry['changes'][0]['value'] and 'text' in entry['changes'][0]['value']['messages'][0]['type']:
             payload  = {}
-            revert(request,'ind', data, 'text')
+            payload["reply"] = str(data)
+            revert(request,'ind', payload, 'reply')
             payload['ph_no'] = entry['changes'][0]['value']['messages'][0]['from'] or None
             payload['text'] = entry['changes'][0]['value']['messages'][0]['text']['body'] or None
             payload['name'] = entry['changes'][0]['value']['contacts'][0]['profile']['name'] or None
