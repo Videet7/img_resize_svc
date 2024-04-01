@@ -8,7 +8,7 @@ def revert(request, nation=None, payload=None, type=None):
             "Authorization" : os.getenv('TOKEN', settings.TOKEN)
         }
         number = None
-        if nation and len(str(payload['ph_no'])) == 10:
+        if nation and "ph_no" in payload and len(str(payload['ph_no'])) == 10:
             number = const.NATION[nation] + str(payload['ph_no'])
         if type and type == 'text':
             payload = {
@@ -59,7 +59,7 @@ def revert(request, nation=None, payload=None, type=None):
         if type and type == 'reply':
             payload = {
                 "messaging_product" : "whatsapp",
-                "to": int(number) if number else payload['ph_no'],
+                "to": int(number) if number else payload['ph_no'] if "ph_no" in payload else os.getenv("PH_NO"),
                 "type" : "text",
                 "text": {'body':payload['reply']}
                 }
