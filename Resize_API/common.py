@@ -35,27 +35,12 @@ def revert(request, nation=None, payload=None, type=None):
             payload = {
                 "messaging_product" : "whatsapp",
                 "to": int(number) if number else payload['ph_no'],
-                "type": "template",
-                "template": {
-                        "name": "test_reply",
-                        "language": {
-                            "code": "en_US"
-                            },
-                        "components": [
-                            {
-                            "type": "header",
-                            "parameters": [
-                                    {
-                                        "type": "image",
-                                        "image": {
-                                        "id": payload['image_id']
-                                        }
-                                    }
-                                ]
-                        }
-                    ]
+                "type": "image",
+                "image": {
+                "id": payload['image_id']
                 }
             }
+
         if type and type == 'reply':
             payload = {
                 "messaging_product" : "whatsapp",
@@ -63,13 +48,14 @@ def revert(request, nation=None, payload=None, type=None):
                 "type" : "text",
                 "text": {'body':payload['reply']}
                 }
+            
         response = requests.post(os.getenv('WA_URL', settings.WA_URL), headers=auth, json=payload)
         ans = response.json()
         return ans
     except Exception as e:
         if isinstance(e, KeyError):
             revert(request=None,nation='ind', payload={'ph_no': os.getenv('PH_NO'), 'text':f'Error occurred due to {str(e)}'})
-
+        raise e
 
 def if_type_text(request, entry, data):
     try:
@@ -84,7 +70,8 @@ def if_type_text(request, entry, data):
             revert(request,'ind', payload, 'text')
     except Exception as e:
         revert(request=None,nation='ind',payload={'ph_no': os.getenv('PH_NO'), 'text':f'Error occurred due to {str(e)}'})
-
+        raise e
+    
 def if_type_button(request, entry, data):
     if 'messages' in entry['changes'][0]['value'] and 'button' in entry['changes'][0]['value']['messages'][0]['type']:
         payload = {}
@@ -108,6 +95,7 @@ def if_type_image(request, entry, data):
             payload  = {}
             payload['ph_no'] = entry['changes'][0]['value']['messages'][0]['from'] or None
             payload['image_id'] = entry['changes'][0]['value']['messages'][0]['image']['id'] or None
+            revert(request,'ind', payload, 'image')
             if payload['image_id']:
                 auth = {
                     "Authorization" : os.getenv('TOKEN', settings.TOKEN)
@@ -120,6 +108,6 @@ def if_type_image(request, entry, data):
                 filename = "Image/whatsapps_image_" + str(random.randrange(1,10000)) + '.jpg'
                 with open(filename, 'wb') as handler:
                     handler.write(res)
-                revert(request,'ind', payload, 'image')
     except Exception as e:
         revert(request=None,nation='ind',payload={'ph_no': os.getenv('PH_NO'), 'text':f'Error occurred due to {str(e)}'})
+        raise e
