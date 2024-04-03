@@ -1,4 +1,6 @@
-import requests, os, settings
+import requests, os
+from Resize_API import settings
+
 
 class Whatsapp():
     def __init__(self):
