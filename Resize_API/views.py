@@ -33,7 +33,6 @@ def whatsAppWebhook(request):
         if request.method == "POST":
             #mongo_obj = Mongo()
             data = json.loads(request.body)
-            revert(request, 'ind', str(data), 'body')
             try:
                 if data['object'] == 'whatsapp_business_account':
                     for entry in data['entry']:

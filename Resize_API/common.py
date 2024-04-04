@@ -95,11 +95,14 @@ def if_type_text(request, entry, data):
     
 def if_type_button(request, entry, data):
     try:
-        if 'messages' in entry['changes'][0]['value'] and 'button' in entry['changes'][0]['value']['messages'][0]['type']:
+        if 'messages' in entry['changes'][0]['value'] and entry['changes'][0]['value']['messages'][0]['type'] in ['button', 'interactive']:
             #_ = mongo_obj.save_to_mongo(data, "wa_button")
             payload = {}
             payload['ph_no'] = entry['changes'][0]['value']['messages'][0]['from'] or None
-            payload['text'] = entry['changes'][0]['value']['messages'][0]['button']['text'] or None
+            try:
+                payload['text'] = entry['changes'][0]['value']['messages'][0]['button']['text']
+            except:
+                payload['text'] = entry['changes'][0]['value']['messages'][0]['interactive']['button_reply']['title']
             reply_message(request, payload)
     except Exception as e:
         revert(request=None,nation='ind',payload={'ph_no': os.getenv('PH_NO'), 'text':f'Error occurred due to {str(e)}'})
