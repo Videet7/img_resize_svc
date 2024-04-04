@@ -1,9 +1,9 @@
 {
     "version": 2,
     "builds": [
-        {"src": "manage.py", "use": "@vercel/python"}
+        {"src": "Resize_API/wsgi.py", "use": "@vercel/python"}
     ],
     "routes": [
-        {"src": "/(.*)", "dest": "manage.py"}
+        {"src": "/(.*)", "dest": "Resize_API/wsgi.py"}
     ]
 }
