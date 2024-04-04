@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .common import revert, if_type_text, if_type_button, if_type_image
+#from .mongo_utils import Mongo
 
-import requests
 import json
 import os
 
@@ -31,6 +31,7 @@ def whatsAppWebhook(request):
                 return HttpResponse('error', status=400)
             
         if request.method == "POST":
+            #mongo_obj = Mongo()
             data = json.loads(request.body)
             try:
                 if data['object'] == 'whatsapp_business_account':

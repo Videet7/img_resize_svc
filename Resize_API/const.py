@@ -1,4 +1,5 @@
-FILENAME = "Image/whatsapps_image.jpeg"
+FILE_NAME = "Image/whatsapps_image.jpeg"
+NEW_FILE_NAME = "Image/new_whatsapps_image.jpeg"
 
 NATION = {
     'ind':"91",
