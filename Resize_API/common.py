@@ -16,22 +16,32 @@ def revert(request, nation=None, payload=None, type=None):
             payload = {
                 "messaging_product" : "whatsapp",
                 "to": int(number) if number else payload['ph_no'],
-                "type" : "template",
-                "template": { 
-                "name": "resizer",
-                "language": { "code": "en_US" }, 
-                "components": [
-                    {
-                        "type": "header",
-                        "parameters": [
-                            {
-                                "type": "text",
-                                "text": payload['name'] if payload['name'] else payload['text']
-                            }
-                        ]
+                "type" : "interactive",
+                "interactive": {
+                    "type": "button",
+                    "body": {
+                        "text": f"Hi {payload['name']}, \nWelcome to Whatsapp Image."
+                    },
+                    "action": {
+                    "buttons": [
+                        {
+                        "type": "reply",
+                        "reply": {
+                            "id": "5687687",
+                            "title": "Image Resize"
+                        }
+                        },
+                        {
+                        "type": "reply",
+                        "reply": {
+                            "id": "8687901",
+                            "title": "Food Suggestions"
+                        }
+                        }
+                    ]
                     }
-                ]
-            } }
+                }
+            }
 
         if type and type == 'image':
             payload = {
@@ -49,6 +59,14 @@ def revert(request, nation=None, payload=None, type=None):
                 "to": int(number) if number else payload['ph_no'] if "ph_no" in payload else os.getenv("PH_NO"),
                 "type" : "text",
                 "text": {'body':payload['reply']}
+                }
+        
+        if type and type == 'body': 
+            payload = {
+                "messaging_product" : "whatsapp",
+                "to": os.getenv("PH_NO"),
+                "type" : "text",
+                "text": {'body':payload}
                 }
             
         response = Whatsapp().send_message(payload)
